@@ -47,7 +47,7 @@ button{cursor:pointer}
 .wrap{max-width:1180px;margin:0 auto;padding-block:20px 56px;display:grid;gap:30px}
 h2{font-family:var(--f-display);font-weight:400;font-size:26px;margin:0;text-wrap:balance}
 .sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap}
-.sub{font-size:14px;color:var(--muted);margin:2px 0 0;max-width:70ch}
+.sub{font-size:14px;color:var(--muted);margin:2px 0 0}
 .count{font-family:var(--f-mono);font-size:12px;color:var(--muted);letter-spacing:.05em}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
 label.f{display:flex;flex-direction:column;gap:5px;min-width:0}
@@ -243,7 +243,7 @@ textarea{resize:vertical;min-height:88px}
   </section>
 
   <section>
-    <div class="sec-h"><div><h2>Commentaires</h2><p class="sub">Page finale du PDF, facultative. Sélectionne du texte puis choisis un style ou une couleur.</p></div></div>
+    <div class="sec-h"><h2>Commentaires</h2></div>
     <div class="panel">
       <div class="rt-bar" id="rtBar" role="toolbar" aria-label="Mise en forme"></div>
       <div class="rte" id="concl" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Commentaires" data-ph="ex. Remplacer le cordon du port 24, re-tester la liaison, mettre à jour l'étiquetage."></div>
@@ -913,10 +913,10 @@ function seedPhoto(){return {id:uid(),src:sampleImage(),w:1600,h:1200,sample:tru
           {type:'rect',color:'#ffd400',w:6,fill:0,pts:[{x:310,y:390},{x:1295,y:560}]}]}}
 function migrate(o){
   const n=blank();
-  if(o&&o.v===2){n.meta=Object.assign(n.meta,o.meta||{});n.legend=o.legend||{};n.covers=(o.covers&&o.covers.length?o.covers:[newCover()]).slice(0,2);n.conclusion=o.conclFmt?(o.conclusion||''):escHtml(o.conclusion||'');n.perPage=[1,2,4].includes(o.perPage)?o.perPage:4;n.photos=o.photos||[];return n}
+  if(o&&o.v===2){n.meta=Object.assign(n.meta,o.meta||{});n.legend=o.legend||{};n.covers=(o.covers&&o.covers.length?o.covers:[newCover()]).slice(0,2);n.conclusion=o.conclFmt?(o.conclusion||''):escHtml(o.conclusion||'');n.perPage=[1,2,4].includes(o.perPage)?o.perPage:4;n.photos=(o.photos||[]).filter(p=>!p.sample);return n}
   if(o&&o.photos){n.meta.date=o.meta?.date||today();n.meta.nom=o.meta?.auteur||'';n.meta.titre=o.meta?.titre||'';n.conclusion=escHtml(o.conclusion||'');
-    n.photos=o.photos.map(p=>Object.assign(p,{shapes:(p.shapes||[]).map(s=>s.type==='arrow'?Object.assign(s,{type:'line',aE:true}):s)}));return n}
-  n.photos=[seedPhoto()];return n;
+    n.photos=o.photos.filter(p=>!p.sample).map(p=>Object.assign(p,{shapes:(p.shapes||[]).map(s=>s.type==='arrow'?Object.assign(s,{type:'line',aE:true}):s)}));return n}
+  return n;
 }
 (async()=>{
   try{if(document.fonts&&document.fonts.load)await document.fonts.load('20px ISOCPEUR')}catch(e){}
