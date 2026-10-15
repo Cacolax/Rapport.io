@@ -1,3 +1,4 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Rapport Photo Chantier</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -509,7 +510,7 @@ function renderCovers(){
         '<label class="pick-btn" for="i_'+iid+'">'+IC.lib+'Importer une image</label><input type="file" class="hidden-in" id="i_'+iid+'" accept="image/*"></div>'}
       sl.innerHTML=h;
       sl.querySelectorAll('input[type=file]').forEach(inp=>inp.onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
-        try{const old=c[key];c[key]=await importFile(f,key==='plan'?2600:2200,key==='plan'?'image/png':'image/jpeg');if(old){imgCache.delete(old.id);thumbs.delete(old.id)}save();renderCovers();updateLegendPlaceholders();openEditor(c[key],(c.label||'Ligne '+(ci+1))+' · '+title)}
+        try{const old=c[key];c[key]=await importFile(f,key==='plan'?2600:2200,key==='plan'?'image/png':'image/jpeg');if(old){imgCache.delete(old.id);thumbs.delete(old.id)}save();renderCovers();updateLegendPlaceholders()}
         catch(err){toast("Impossible de lire cette image.")}});
       if(im){thumbInto(sl.querySelector('img'),im);
         const go=()=>openEditor(im,(c.label||'Ligne '+(ci+1))+' · '+title);sl.querySelector('.slot-v').onclick=go;sl.querySelector('.ed1').onclick=go;
@@ -551,7 +552,7 @@ async function addFiles(files){
   for(const f of files){try{S.photos.push(await importFile(f))}catch(e){toast("Une image n'a pas pu être lue.")}}
   save();renderGrid();
 }
-$('camIn').onchange=e=>{const f=[...e.target.files];e.target.value='';addFiles(f).then(()=>{if(f.length===1)openEditor(S.photos[S.photos.length-1],'Photo '+S.photos.length)})};
+$('camIn').onchange=e=>{const f=[...e.target.files];e.target.value='';addFiles(f)};
 $('libIn').onchange=e=>{const f=[...e.target.files];e.target.value='';addFiles(f)};
 
 /* Nouveau rapport */
@@ -924,3 +925,5 @@ function migrate(o){
 })();
 })();
 </script>
+
+</body></html>
