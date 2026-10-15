@@ -1,5 +1,5 @@
 // Rapport photo : cache hors ligne. Changer VERSION à chaque mise à jour de index.html.
-const VERSION='2';
+const VERSION='3';
 const CACHE='rapport-photo-'+VERSION;
 const FILES=['./','./index.html','./manifest.webmanifest','./jspdf.umd.min.js','./pdf.min.js','./pdf.worker.min.js','./icon-180.png','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES.map(u=>new Request(u,{cache:'reload'})))))});
