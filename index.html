@@ -167,7 +167,7 @@ a.btn{color:var(--ink)}
 .pa-page{position:relative;display:flex;flex-direction:column;gap:6px;padding:0;border:0;background:transparent;color:#e8edf2;cursor:pointer;text-align:left;font-size:14px}
 .pa-page canvas{width:100%;height:auto;background:#fff;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,.35);outline:3px solid transparent;outline-offset:2px}
 .pa-page:hover canvas,.pa-page:focus-visible canvas{outline-color:#3b6cf0}
-.pa-page.has::after{content:"Annotée";position:absolute;right:8px;top:8px;background:#3b6cf0;color:#fff;font-size:12px;font-weight:600;padding:3px 8px;border-radius:999px}
+.pa-page.has::after{content:"Modifiée";position:absolute;right:8px;top:8px;background:#3b6cf0;color:#fff;font-size:12px;font-weight:600;padding:3px 8px;border-radius:999px}
 
 /* Éditeur */
 .ed{position:fixed;inset:0;z-index:20;background:var(--ed-bg);color:var(--ed-ink);display:flex;flex-direction:column;
@@ -268,7 +268,7 @@ input[type=search]{width:100%;min-height:44px;border:1px solid var(--line);borde
   </button>
   <button class="btn rep-only" id="paBtn" type="button" hidden>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4"/><path d="M14 3v5h5v3"/><path d="M14 21l1-4 5-5 3 3-5 5z"/></svg>
-    <span>Annoter le PDF</span>
+    <span>Modifier le PDF</span>
   </button>
   <button class="btn primary rep-only" id="genBtn" type="button" hidden>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v6M9 15l3 3 3-3"/></svg>
@@ -382,10 +382,10 @@ input[type=search]{width:100%;min-height:44px;border:1px solid var(--line);borde
 <div class="pv" id="pa" hidden>
   <div class="pv-top">
     <button class="btn" id="paClose" type="button">Fermer</button>
-    <b id="paTitle">Annoter le PDF</b>
+    <b id="paTitle">Modifier le PDF</b>
     <span style="min-width:90px"></span>
   </div>
-  <div class="pv-body"><p class="pa-hint">Touche une page pour l'annoter. Les annotations s'ajoutent par-dessus la page à chaque génération du PDF.</p><div class="pa-grid" id="paBody"></div></div>
+  <div class="pv-body"><p class="pa-hint">Touche une page pour la modifier. Les modifications s'ajoutent par-dessus la page à chaque génération du PDF.</p><div class="pa-grid" id="paBody"></div></div>
 </div>
 
 <div class="pv" id="pv" hidden>
@@ -668,13 +668,13 @@ function renderCovers(){
     pg.forEach(it=>{const idx=S.cover.indexOf(it),iid=it.id,plan=it.kind==='plan',name=kindName(it.kind);
       const c=document.createElement('article');c.className='card';
       let h='';
-      if(it.img)h+='<button class="thumb" type="button" aria-label="Annoter"><img alt=""><span class="kind">'+name.toUpperCase()+'</span></button>';
+      if(it.img)h+='<button class="thumb" type="button" aria-label="Modifier"><img alt=""><span class="kind">'+name.toUpperCase()+'</span></button>';
       else h+='<div class="thumb-e"><span>'+(plan?'Ouvre le plan sur GIS, fais une capture d\'écran, puis colle-la ici.':'Photo du bâtiment')+'</span><div class="slot-row">'+
         (plan?'<a class="pick-btn gis" href="'+GIS_URL+'" target="_blank" rel="noopener">'+IC.map+'GIS</a><button class="pick-btn paste" type="button">'+IC.paste+'Coller</button>':
           '<label class="pick-btn" for="c_'+iid+'">'+IC.cam+'Photo</label><input type="file" class="hidden-in" id="c_'+iid+'" accept="image/*" capture="environment">')+
         '<label class="pick-btn" for="i_'+iid+'">'+IC.lib+'Importer</label><input type="file" class="hidden-in" id="i_'+iid+'" accept="image/*"></div></div>';
       h+='<div class="card-b"><label class="f"><span>'+name+' · titre</span><input type="text" id="cl_'+iid+'" placeholder="'+(plan?'ex. Plan 200-R':'ex. B.200 – façade nord')+'"></label>';
-      if(it.img)h+='<div class="row-a"><button class="btn sm ed1" type="button">'+IC.pen+'Annoter</button>'+
+      if(it.img)h+='<div class="row-a"><button class="btn sm ed1" type="button">'+IC.pen+'Modifier</button>'+
         (plan?'<a class="btn sm gis" href="'+GIS_URL+'" target="_blank" rel="noopener">'+IC.map+'GIS</a><button class="btn sm paste" type="button">'+IC.paste+'Coller</button>':'')+
         '<label class="btn sm" for="r_'+iid+'">Remplacer</label><input type="file" class="hidden-in" id="r_'+iid+'" accept="image/*"></div>';
       h+='<div class="brk-slot"></div><div class="acts" style="justify-content:flex-end">'+
@@ -706,9 +706,9 @@ function renderGrid(){
   let pn=0;pages.forEach(pg=>{pn++;g.insertAdjacentHTML('beforeend','<div class="page-sep">Page '+(off+pn)+'</div>');pg.forEach(p=>{const i=S.photos.indexOf(p);
     const c=document.createElement('article');c.className='card';
     const n=String(i+1).padStart(2,'0');
-    c.innerHTML='<button class="thumb" type="button" aria-label="Annoter la photo '+(i+1)+'"><img alt=""><span class="tag">PHOTO '+n+'</span>'+(p.sample?'<span class="tag ex">EXEMPLE</span>':'')+'</button>'+
+    c.innerHTML='<button class="thumb" type="button" aria-label="Modifier la photo '+(i+1)+'"><img alt=""><span class="tag">PHOTO '+n+'</span>'+(p.sample?'<span class="tag ex">EXEMPLE</span>':'')+'</button>'+
       '<div class="card-b"><label class="f"><span>Commentaire</span><textarea id="cap_'+p.id+'" rows="2" placeholder="Décris ce que montre la photo"></textarea></label><div class="brk-slot"></div>'+
-      '<div class="acts"><button class="btn edit" type="button">'+IC.pen+'Annoter</button>'+
+      '<div class="acts"><button class="btn edit" type="button">'+IC.pen+'Modifier</button>'+
       '<button class="btn up" type="button" aria-label="Monter"'+(i===0?' disabled':'')+'>'+IC.up+'</button>'+
       '<button class="btn down" type="button" aria-label="Descendre"'+(i===S.photos.length-1?' disabled':'')+'>'+IC.down+'</button>'+
       '<button class="btn danger del" type="button" aria-label="Supprimer">'+IC.del+'</button></div></div>';
@@ -839,7 +839,7 @@ let raf=0;function redraw(){if(raf||!ed.p)return;raf=requestAnimationFrame(()=>{
 async function openEditor(p,title,after){
   ed.after=after||null;
   if(document.fonts&&document.fonts.load){try{await document.fonts.load('20px ISOCPEUR')}catch(e){}}
-  ed.p=p;ed.img=await getImg(p);ed.shapes=clone(p.shapes);ed.hist=[];ed.cur=null;ed.sel=-1;ed.pend=null;ed.title=title||'Annoter';ed.pm=null;
+  ed.p=p;ed.img=await getImg(p);ed.shapes=clone(p.shapes);ed.hist=[];ed.cur=null;ed.sel=-1;ed.pend=null;ed.title=title||'Modifier';ed.pm=null;
   $('edTitle').textContent=ed.title;$('ed').hidden=false;document.body.style.overflow='hidden';
   syncTools();requestAnimationFrame(()=>fit(false));
 }
@@ -1184,7 +1184,7 @@ async function preview(){
   finally{busy(false)}
 }
 $('pvBtn').onclick=preview;
-/* Annoter le PDF : chaque page est annotée dans l'éditeur, les annotations sont stockées par page (clé stable) */
+/* Modifier le PDF : chaque page est annotée dans l'éditeur, les annotations sont stockées par page (clé stable) */
 let paDoc=null,paRun=0;
 async function renderPageTo(pdf,i,canvas,width){const pg=await pdf.getPage(i);const v0=pg.getViewport({scale:1});const vp=pg.getViewport({scale:width/v0.width});
   canvas.width=Math.round(vp.width);canvas.height=Math.round(vp.height);await pg.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise}
@@ -1192,13 +1192,13 @@ function drawNotesOn(canvas,key){const sh=(S.pageNotes||{})[key];canvas.parentEl
   const x=canvas.getContext('2d');x.save();x.scale(canvas.width/PGW,canvas.height/PGH);sh.forEach(s=>drawShape(x,s));x.restore()}
 async function openPdfAnnot(){
   if(!window.jspdf){toast("Le module PDF n'a pas pu se charger. Vérifie la connexion puis recharge la page.",5000);return}
-  const run=++paRun;$('pa').hidden=false;document.body.style.overflow='hidden';const body=$('paBody');body.innerHTML='<p class="pv-msg">Préparation des pages…</p>';$('paTitle').textContent='Annoter le PDF';busy(true);
+  const run=++paRun;$('pa').hidden=false;document.body.style.overflow='hidden';const body=$('paBody');body.innerHTML='<p class="pv-msg">Préparation des pages…</p>';$('paTitle').textContent='Modifier le PDF';busy(true);
   try{if(document.fonts&&document.fonts.load){try{await document.fonts.load('20px ISOCPEUR')}catch(e){}}
     const [doc,lib]=await Promise.all([buildPdf({noOverlay:true}),getPdfjs()]);if(run!==paRun)return;
     const pdf=await lib.getDocument({data:new Uint8Array(doc.output('arraybuffer')),isEvalSupported:false}).promise;paDoc={pdf,keys:doc.__keys};
-    body.innerHTML='';$('paTitle').textContent='Annoter le PDF · '+pdf.numPages+' page'+(pdf.numPages>1?'s':'');
+    body.innerHTML='';$('paTitle').textContent='Modifier le PDF · '+pdf.numPages+' page'+(pdf.numPages>1?'s':'');
     for(let i=1;i<=pdf.numPages;i++){if(run!==paRun||$('pa').hidden)return;const key=paDoc.keys[i-1];
-      const b=document.createElement('button');b.type='button';b.className='pa-page';b.innerHTML='<canvas aria-hidden="true"></canvas><span>Page '+i+'</span>';b.setAttribute('aria-label','Annoter la page '+i);body.appendChild(b);
+      const b=document.createElement('button');b.type='button';b.className='pa-page';b.innerHTML='<canvas aria-hidden="true"></canvas><span>Page '+i+'</span>';b.setAttribute('aria-label','Modifier la page '+i);body.appendChild(b);
       const c=b.querySelector('canvas');await renderPageTo(pdf,i,c,560);drawNotesOn(c,key);b.onclick=()=>annotPage(i,key)}
   }catch(err){console.error(err);body.innerHTML='<p class="pv-msg">Les pages n\'ont pas pu être préparées (connexion nécessaire la première fois).</p>'}
   finally{busy(false)}
