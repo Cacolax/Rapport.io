@@ -459,7 +459,7 @@ function symBox(s){const p=s.pts[0],z=s.size,d=SYM[s.kind]||{};
   switch(d.shape){
     case 'pp':return [p.x-z/2,p.y-z/4,p.x+z/2,p.y+z/4];
     case 'half':return [p.x-z/2,p.y-z/4,p.x+z/2,p.y+z/4];
-    case 'mv':return [p.x-z/2,p.y-z/2,p.x+z*0.75,p.y+z/2];
+    case 'mv':return [p.x-z/2,p.y-z/2,p.x+z*0.95,p.y+z/2];
     case 'star':return [p.x-z*0.55,p.y-z*0.55,p.x+z*0.55,p.y+z*0.55];
     case 'outlet':{const b=outletBox(s);return [p.x-b.w/2,p.y-b.h/2,p.x+b.w/2,p.y+b.h/2]}
     default:return [p.x-z/2,p.y-z/2,p.x+z/2,p.y+z/2];
@@ -471,7 +471,8 @@ function drawSym(x,s,outline){
   if(d.shape==='sq'){x.beginPath();x.rect(p.x-z/2,p.y-z/2,z,z);x.fill();edge()}
   else if(d.shape==='tri'){x.beginPath();x.moveTo(p.x-z/2,p.y+z/2);x.lineTo(p.x+z/2,p.y+z/2);x.lineTo(p.x+z/2,p.y-z/2);x.closePath();x.fill();edge()}
   else if(d.shape==='mv'){x.beginPath();x.rect(p.x-z/2,p.y-z/2,z,z);x.fill();edge();x.fillStyle='#000';x.strokeStyle='#000';x.lineWidth=Math.max(1,z*0.05);
-    x.beginPath();x.moveTo(p.x,p.y);x.lineTo(p.x+z*0.75,p.y);x.stroke();x.beginPath();x.arc(p.x,p.y,z*0.24,0,Math.PI*2);x.fill()}
+    x.beginPath();x.moveTo(p.x,p.y);x.lineTo(p.x+z*0.72,p.y);x.stroke();x.beginPath();x.arc(p.x,p.y,z*0.24,0,Math.PI*2);x.fill();
+    x.beginPath();x.moveTo(p.x+z*0.95,p.y);x.lineTo(p.x+z*0.68,p.y-z*0.15);x.lineTo(p.x+z*0.68,p.y+z*0.15);x.closePath();x.fill()}
   else if(d.shape==='pp'){x.beginPath();x.rect(p.x-z/2,p.y-z/4,z,z/2);x.fill();edge()}
   else if(d.shape==='half'){x.beginPath();x.moveTo(p.x-z/2,p.y-z/4);x.lineTo(p.x+z/2,p.y-z/4);x.arc(p.x,p.y-z/4,z/2,0,Math.PI,false);x.closePath();x.fill();edge()}
   else if(d.shape==='star'){const R=z*0.55,r=R*0.45;x.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r:R;x.lineTo(p.x+Math.cos(a)*rr,p.y+Math.sin(a)*rr)}x.closePath();x.fill();
@@ -485,7 +486,7 @@ function drawSym(x,s,outline){
 const symIcon=(()=>{const cache={};return (k,color)=>{const key=k+(color||'');if(cache[key])return cache[key];
   const c=document.createElement('canvas');c.width=c.height=96;const x=c.getContext('2d');
   const s={kind:k,size:SYM[k].shape==='outlet'?40:70,color:color||'#ff0000',pts:[{x:48,y:48}],text:'00/01\n00/02'};
-  if(SYM[k].shape==='mv')s.pts[0].x=40;drawSym(x,s,false);return cache[key]=c.toDataURL('image/png')}})();
+  if(SYM[k].shape==='mv'){s.size=56;s.pts[0].x=34}drawSym(x,s,false);return cache[key]=c.toDataURL('image/png')}})();
 
 /* ================= État ================= */
 const newItem=kind=>({id:uid(),kind,label:'',img:null,br:false});
@@ -1040,7 +1041,7 @@ const G={W:297,H:210,fx0:4.95,fy0:4.95,fx1:290,fy1:205.2,cy:174.08,mx0:153.15,mx
 const PT=v=>v; // tailles en points
 const LINE=[150,150,150];
 function symPng(k){const c=document.createElement('canvas');c.width=c.height=120;const x=c.getContext('2d');const z=96;
-  const s={kind:k,size:z,pts:[{x:60,y:60}]};drawSym(x,s,false);return c.toDataURL('image/png')}
+  const s={kind:k,size:z,pts:[{x:60,y:60}]};if(SYM[k].shape==='mv'){s.size=76;s.pts[0].x=42}drawSym(x,s,false);return c.toDataURL('image/png')}
 function makeDoc(){
   const {jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4',compress:true});
   doc.addFileToVFS('ISOCPEUR.ttf',FONT_B64);doc.addFont('ISOCPEUR.ttf','ISOCPEUR','normal');doc.setFont('ISOCPEUR','normal');return doc}
