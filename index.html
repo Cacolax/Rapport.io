@@ -527,12 +527,15 @@ function curveSegs(s){const P=s.pts,n=P.length,out=[];
 const cub=(g,t)=>{const u=1-t;return {x:u*u*u*g.a.x+3*u*u*t*g.c1.x+3*u*t*t*g.c2.x+t*t*t*g.b.x,y:u*u*u*g.a.y+3*u*u*t*g.c1.y+3*u*t*t*g.c2.y+t*t*t*g.b.y}};
 const isStraight=g=>g.c1.x===g.a.x&&g.c1.y===g.a.y&&g.c2.x===g.b.x&&g.c2.y===g.b.y;
 function flatten(s){if(s.pts.length<2)return s.pts;const out=[s.pts[0]];curveSegs(s).forEach(g=>{if(isStraight(g)){out.push(g.b);return}for(let k=1;k<=16;k++)out.push(cub(g,k/16))});return out}
+const DASHABLE=['pen','line','poly','rect','ellipse'];
+const DASHES=[['solid','Continu',''],['dash','Tirets','8 6'],['dot','Pointillés','0.1 6']];
 function head(x,from,tip,w){const ang=Math.atan2(tip.y-from.y,tip.x-from.x),hl=Math.max(w*4.2,14),sp=0.42;
   x.beginPath();x.moveTo(tip.x,tip.y);x.lineTo(tip.x-hl*Math.cos(ang-sp),tip.y-hl*Math.sin(ang-sp));x.lineTo(tip.x-hl*Math.cos(ang+sp),tip.y-hl*Math.sin(ang+sp));x.closePath();x.fill();
   return {x:tip.x-Math.cos(ang)*hl*0.75,y:tip.y-Math.sin(ang)*hl*0.75}}
 function textMetrics(s){mctx.font=s.size+'px '+FONT;const ls=(s.text||'').split('\n');return {ls,w:Math.max(1,...ls.map(l=>mctx.measureText(l).width)),h:ls.length*s.size*1.15}}
 function drawShape(x,s){
   x.save();x.strokeStyle=s.color;x.fillStyle=s.color;x.lineWidth=s.w;x.lineCap='round';x.lineJoin='round';
+  if(s.dash&&s.dash!=='solid'&&DASHABLE.includes(s.type))x.setLineDash(s.dash==='dot'?[0.001,s.w*2.2]:[s.w*3.2,s.w*2.4]);
   const P=s.pts;
   if(s.type==='pen'){x.beginPath();x.moveTo(P[0].x,P[0].y);for(const p of P)x.lineTo(p.x,p.y);x.stroke()}
   else if(s.type==='line'||s.type==='poly'){
@@ -748,7 +751,7 @@ const TOOLS=[
 const COLORS=[['#ff0000','Rouge'],['#00cc00','Vert'],['#9000cc','Violet'],['#ffd400','Jaune'],['#0045ff','Bleu'],['#ffffff','Blanc'],['#000000','Noir']];
 const SIZES=[[1,6],[2,10],[3.5,15]];
 const FILLS=[0,0.2,0.4,0.6,0.8,1];
-const ed={p:null,shapes:[],hist:[],tool:'arrow',color:'#ff0000',size:2,fill:0,arrS:false,arrE:false,sym:'utp2n',cur:null,sel:-1,drag:null,s:1,z:1,ox:0,oy:0,dpr:1,tb:null,pend:null,pm:null,pmColor:'#0045ff'};
+const ed={p:null,shapes:[],hist:[],tool:'arrow',color:'#ff0000',size:2,fill:0,arrS:false,arrE:false,sym:'utp2n',dash:'solid',cur:null,sel:-1,drag:null,s:1,z:1,ox:0,oy:0,dpr:1,tb:null,pend:null,pm:null,pmColor:'#0045ff'};
 const base=()=>ed.p.base||Math.max(ed.p.w,ed.p.h);
 const strokeW=f=>Math.max(2,base()/420*(f??ed.size));
 const textSize=f=>Math.max(14,base()/42*(0.7+(f??ed.size)*0.35));
@@ -786,6 +789,8 @@ function renderOpts(){
     ci.onchange=e=>{const v=e.target.value;if(s)applySel(x=>x.color=v);else{ed.color=v;renderOpts()}};sep()}
   {const g=grp('Taille');const cur=s?sizeOf(s):ed.size;
     SIZES.forEach(([f,d])=>btn(g,'<i style="width:'+d+'px;height:'+d+'px"></i>','sz',()=>{if(s)applySel(x=>{if(x.type==='text')x.size=textSize(f);else if(x.type==='sym')x.size=symSize(f);else if(x.type==='pmark')x.size=symSize(f)*0.9;else x.w=strokeW(f)});else{ed.size=f;renderOpts()}},cur===f))}
+  if(DASHABLE.includes(type)){sep();const g=grp('Trait');const cur=s?(s.dash||'solid'):ed.dash;
+    DASHES.forEach(([k,l,da])=>{const b=btn(g,'<svg width="34" height="12" viewBox="0 0 34 12" aria-hidden="true"><line x1="3" y1="6" x2="31" y2="6" stroke="currentColor" stroke-width="3" stroke-linecap="round"'+(da?' stroke-dasharray="'+da+'"':'')+'/></svg>','op',()=>{if(s)applySel(x=>x.dash=k);else{ed.dash=k;renderOpts()}},cur===k);b.setAttribute('aria-label',l);b.title=l})}
   if(type==='rect'||type==='ellipse'){sep();const g=grp('Remplissage');const cur=s?s.fill||0:ed.fill;
     FILLS.forEach(f=>btn(g,Math.round(f*100)+'%','op',()=>{if(s)applySel(x=>x.fill=f);else{ed.fill=f;renderOpts()}},Math.abs(cur-f)<0.01))}
   if(type==='line'&&t!=='arrow'||type==='poly'){sep();const g=grp('Flèche');
@@ -879,9 +884,9 @@ cv.addEventListener('pointerdown',e=>{
     ed.sel=i;if(i>=0)ed.drag={kind:'m',start:p,orig:clone(ed.shapes[i]),snap:JSON.stringify(ed.shapes),moved:false};
     else if(ed.z>1)ed.drag={kind:'pan',sx:e.clientX,sy:e.clientY,ox:ed.ox,oy:ed.oy};
     redraw();renderOpts();return}
-  if(t==='poly'){if(!ed.cur||ed.cur.type!=='poly')ed.cur={type:'poly',color:ed.color,w:strokeW(),aS:ed.arrS,aE:ed.arrE,smooth:!!ed.smooth,pts:[]};ed.cur.pts.push(p);ed.cur.addedNow=true;redraw();renderOpts();return}
+  if(t==='poly'){if(!ed.cur||ed.cur.type!=='poly')ed.cur={type:'poly',color:ed.color,w:strokeW(),dash:ed.dash,aS:ed.arrS,aE:ed.arrE,smooth:!!ed.smooth,pts:[]};ed.cur.pts.push(p);ed.cur.addedNow=true;redraw();renderOpts();return}
   const type=t==='arrow'?'line':t;
-  ed.cur={type,color:ed.color,w:strokeW(),pts:t==='pen'?[p]:[p,p]};
+  ed.cur={type,color:ed.color,w:strokeW(),dash:ed.dash,pts:t==='pen'?[p]:[p,p]};
   if(type==='line'){ed.cur.aS=t==='arrow'?false:ed.arrS;ed.cur.aE=t==='arrow'?true:ed.arrE}
   if(type==='rect'||type==='ellipse')ed.cur.fill=ed.fill;
   redraw();
