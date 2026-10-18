@@ -1,7 +1,7 @@
 {
- "name": "Rapport technique",
- "short_name": "Rapport",
- "description": "Rapports photo techniques IT-FCS-DO",
+ "name": "UTP – Useful Tools Pack",
+ "short_name": "UTP",
+ "description": "Rapports techniques, plans quadrillés et mesures – IT-FCS-DO",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",

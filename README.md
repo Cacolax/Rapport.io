@@ -1,6 +1,10 @@
-# Rapport technique
+# UTP – Useful Tools Pack
 
-Application web pour iPad qui sert à produire sur le terrain des **rapports photo annotés en PDF** : A4 paysage, police ISOCPEUR, cadre, légende et cartouche CERN IT-FCS-DO.
+Boîte à outils web pour iPad, pour le terrain (câblage et télécom, CERN IT-FCS-DO) :
+- **Rapports** : rapports photo annotés en PDF (A4 paysage, police ISOCPEUR, cadre, légende et cartouche IT-FCS-DO).
+- **Plans quadrillés** : quadrillage d'un plan d'étage à partir d'une unité de grille, avec textes et mesures, en PDF A4.
+
+L'accueil est organisé en onglets : « Rapports » et « Plans quadrillés ».
 
 **Ouvrir l'app :** https://cacolax.github.io/Rapport.io/
 
@@ -32,6 +36,15 @@ Application web pour iPad qui sert à produire sur le terrain des **rapports pho
 - Aperçu avant génération.
 - « Modifier le PDF » : annotation directe des pages générées, avec les mêmes outils.
 - Nom du fichier : `B<bâtiment>_Rapport_technique_v<version>`.
+
+**Plans quadrillés**
+- Import d'un plan PDF (1re page) ou image, par exemple une capture de la Planothèque.
+- Unité de grille : 2 points sur le plan + la longueur en cm (ex. une porte = 70 cm).
+- Origine, fin de l'axe Y (vertical, ou « Axe libre » pour un plan penché), puis extension en X en direct.
+- Réglages : colonnes, lignes, ajustement fin de la case, dépassement des lignes (aucun, ½ ou 1 case).
+- Texte ISOCPEUR (couleur, taille en pt) pour un titre ou des repères.
+- Mesure en polyligne avec le total en m ou cm, affichable ou non dans le PDF.
+- PDF A4 (orientation automatique) : grille vectorielle bleue, numérotation, débord d'une case, plan penché remis droit.
 
 **Hors ligne**
 - Installable sur l'écran d'accueil de l'iPad. Une fois chargée, l'app fonctionne sans réseau.
