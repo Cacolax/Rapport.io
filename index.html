@@ -1689,10 +1689,10 @@ function openPlanQ(){if(!S)return;const b=spBat(),fl=spFloors();
     ask('Information manquante','Renseigne '+miss+' dans « Informations » pour ouvrir le plan quadrillé.',[['ok','OK','primary']]).then(()=>{
       if($('ed').hidden){const el=$(!b?'m_bat':'m_etage');el.scrollIntoView({block:'center'});setTimeout(()=>el.focus(),300)}});return}
   try{flush()}catch(_){}
-  if(fl.length===1){spGo(spLink(SP_BASE+'/'+spFile(b,fl[0])));return}
+  if(fl.length===1){spGo(spSearch(b+'-'+fl[0]));return}
   $('dlgT').textContent='Plan quadrillé';$('dlgP').textContent='Bâtiment '+b+' · choisis l\'étage.';const A=$('dlgA');A.innerHTML='';const close=()=>{$('dlgBg').hidden=true};
   const lk=(l,u)=>{const x=document.createElement('a');x.className='btn';x.href=u;x.target='_blank';x.rel='noopener';x.textContent=l;x.onclick=close;A.appendChild(x)};
-  fl.forEach(e=>lk(e,spLink(SP_BASE+'/'+spFile(b,e))));lk('SharePoint plan',spSearch(b));
+  fl.forEach(e=>lk(e,spSearch(b+'-'+e)));lk('SharePoint plan',spSearch(b));
   const c=document.createElement('button');c.type='button';c.className='btn';c.textContent='Annuler';c.onclick=close;A.appendChild(c);$('dlgBg').hidden=false}
 document.querySelectorAll('.pq-btn').forEach(x=>x.addEventListener('click',openPlanQ));
 /* ================= Hors ligne (service worker) ================= */
