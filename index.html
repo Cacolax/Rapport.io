@@ -1685,9 +1685,9 @@ const spFile=(b,e)=>b+'-'+e+' Plan quadrille.pdf';
 /* ouverture par un vrai lien (fiable sur iPad, sans blocage de fenêtre) */
 function spGo(url){const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove()}
 function openPlanQ(){if(!S)return;const b=spBat(),fl=spFloors();
-  if(!b||!fl.length){const miss=!b&&!fl.length?'le n° de bâtiment et l\'étage':!b?'le n° de bâtiment':'l\'étage';
-    ask('Information manquante','Renseigne '+miss+' dans « Informations » pour ouvrir le plan quadrillé.',[['ok','OK','primary']]).then(()=>{
-      if($('ed').hidden){const el=$(!b?'m_bat':'m_etage');el.scrollIntoView({block:'center'});setTimeout(()=>el.focus(),300)}});return}
+  if(!b){ask('Information manquante','Renseigne le n° de bâtiment dans « Informations » pour ouvrir le plan quadrillé.',[['ok','OK','primary']]).then(()=>{
+      if($('ed').hidden){const el=$('m_bat');el.scrollIntoView({block:'center'});setTimeout(()=>el.focus(),300)}});return}
+  if(!fl.length){try{flush()}catch(_){}spGo(spSearch(b));return}
   try{flush()}catch(_){}
   if(fl.length===1){spGo(spSearch(b+'-'+fl[0]));return}
   $('dlgT').textContent='Plan quadrillé';$('dlgP').textContent='Bâtiment '+b+' · choisis l\'étage.';const A=$('dlgA');A.innerHTML='';const close=()=>{$('dlgBg').hidden=true};
