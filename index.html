@@ -1421,8 +1421,15 @@ const qUu=()=>{const v=qVv();return {x:-v.y,y:v.x}};
 function qP(gx,gy){const u=qUu(),v=qVv(),c=Q.cell;return {x:Q.o.x+(u.x*gx+v.x*gy)*c,y:Q.o.y+(u.y*gx+v.y*gy)*c}}
 function qG(p){const u=qUu(),v=qVv(),dx=p.x-Q.o.x,dy=p.y-Q.o.y;return {gx:(dx*u.x+dy*u.y)/Q.cell,gy:(dx*v.x+dy*v.y)/Q.cell}}
 const qReady=()=>Q&&Q.cell&&Q.o&&Q.nx>0&&Q.ny>0;
-function qLayout(){const M=Math.max(1,Q.over+0.9),W=Q.nx+2*M,H=Q.ny+2*M;
-  const sl=Math.min(277/W,190/H),sp=Math.min(190/W,277/H),land=sl>=sp,s=land?sl:sp,PW=land?297:210,PH=land?210:297,cx=Q.nx/2,cy=Q.ny/2;
+function qLayout(){const M=Math.max(1,Q.over+0.9),G={x0:-M,x1:Q.nx+M,y0:-M,y1:Q.ny+M};let s=null,B=G,land=true;
+  /* la page contient la grille + les textes + les mesures (les tailles en pt dépendent de l'échelle : on itère) */
+  for(let it=0;it<5;it++){B={...G};
+    if(s){const ext=(gx,gy)=>{B.x0=Math.min(B.x0,gx);B.x1=Math.max(B.x1,gx);B.y0=Math.min(B.y0,gy);B.y1=Math.max(B.y1,gy)};
+      (Q.texts||[]).forEach(t=>{const g=qG(t.p),b=qTxtBox(t,{s}),c=Q.cell;ext(g.gx+b.x0/c,g.gy-b.y1/c);ext(g.gx+b.x1/c,g.gy-b.y0/c)});
+      if(Q.measPdf!==false)(Q.meas||[]).forEach(m=>{m.pts.forEach(p=>{const g=qG(p);ext(g.gx,g.gy)});const e=qG(m.pts[m.pts.length-1]),sz=8*0.3528/s,w=fmtLen(qLen(m.pts)).length*0.6*sz;ext(e.gx+sz*0.3+w+sz*0.4,e.gy+sz*1.5)});
+      const pd=4/s;B.x0-=pd;B.x1+=pd;B.y0-=pd;B.y1+=pd}
+    const W=B.x1-B.x0,H=B.y1-B.y0,sl=Math.min(277/W,190/H),sp=Math.min(190/W,277/H);land=sl>=sp;const ns=land?sl:sp;if(s&&Math.abs(ns-s)<1e-4*s){s=ns;break}s=ns}
+  const PW=land?297:210,PH=land?210:297,cx=(B.x0+B.x1)/2,cy=(B.y0+B.y1)/2;
   const fs=Math.min(7,Math.max(3.5,0.3*s/0.3528));
   return {s,land,PW,PH,fs,gx0:cx-PW/2/s,gx1:cx+PW/2/s,gy0:cy-PH/2/s,gy1:cy+PH/2/s,X:gx=>(gx-(cx-PW/2/s))*s,Y:gy=>(cy+PH/2/s-gy)*s}}
 const qTxtPx=(t,L)=>t.pt*0.3528/L.s*Q.cell;
