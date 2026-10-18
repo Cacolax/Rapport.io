@@ -1680,6 +1680,7 @@ const spEnc=v=>encodeURIComponent(v).replace(/-/g,'%2D').replace(/\./g,'%2E');
 const spLink=id=>'https://cern.sharepoint.com/sites/cs-support/firstline/Building%20maps/Forms/AllItems.aspx?viewid=baca5e03%2D1711%2D49cc%2Db347%2D7d6d011c0f94&FolderCTID=0x01200088BE94556DCF934AA4CF02AEC50ACE13'+(id?'&id='+spEnc(id)+'&parent='+spEnc(SP_BASE):'');
 function spBat(){const b=String((S&&S.meta.bat)||'').trim().replace(/^B\.?\s*/i,'');return /^\d+$/.test(b)?b.padStart(4,'0'):b}
 const spFloors=()=>String((S&&S.meta.etage)||'').split(/[,;\/]+/).map(x=>x.trim()).filter(Boolean);
+const spSearch=b=>'https://cern.sharepoint.com/sites/cs-support/firstline/Building%20maps/Forms/AllItems.aspx?view=7&q='+encodeURIComponent(b);
 const spFile=(b,e)=>b+'-'+e+' Plan quadrille.pdf';
 /* ouverture par un vrai lien (fiable sur iPad, sans blocage de fenêtre) */
 function spGo(url){const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove()}
@@ -1691,7 +1692,7 @@ function openPlanQ(){if(!S)return;const b=spBat(),fl=spFloors();
   if(fl.length===1){spGo(spLink(SP_BASE+'/'+spFile(b,fl[0])));return}
   $('dlgT').textContent='Plan quadrillé';$('dlgP').textContent='Bâtiment '+b+' · choisis l\'étage.';const A=$('dlgA');A.innerHTML='';const close=()=>{$('dlgBg').hidden=true};
   const lk=(l,u)=>{const x=document.createElement('a');x.className='btn';x.href=u;x.target='_blank';x.rel='noopener';x.textContent=l;x.onclick=close;A.appendChild(x)};
-  fl.forEach(e=>lk(e,spLink(SP_BASE+'/'+spFile(b,e))));lk('Dossier Building maps',spLink(''));
+  fl.forEach(e=>lk(e,spLink(SP_BASE+'/'+spFile(b,e))));lk('SharePoint plan',spSearch(b));
   const c=document.createElement('button');c.type='button';c.className='btn';c.textContent='Annuler';c.onclick=close;A.appendChild(c);$('dlgBg').hidden=false}
 document.querySelectorAll('.pq-btn').forEach(x=>x.addEventListener('click',openPlanQ));
 /* ================= Hors ligne (service worker) ================= */
