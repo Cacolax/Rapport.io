@@ -98,9 +98,12 @@ Pour tester en local : `python3 -m http.server`, puis ouvrir `http://localhost:8
 
 ---
 
-## Historique
+## Versions
 
-Le détail de chaque version (v1 à v14) se trouve dans l'[historique des commits](https://github.com/Cacolax/Rapport.io/commits/main/).
+Version actuelle : **1.0.0**, affichée dans l'en-tête de l'app.
+Numérotation MAJEUR.MINEUR.CORRECTIF : le détail de chaque version est dans le [journal des versions](CHANGELOG.md) et dans les [Releases GitHub](https://github.com/Cacolax/Rapport.io/releases).
+
+Pour publier une version : mettre à jour `APP_VERSION` dans `index.html`, `VERSION` dans `sw.js` et `CHANGELOG.md`, puis créer l'étiquette `vX.Y.Z`.
 
 ---
 
