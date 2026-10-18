@@ -237,6 +237,9 @@ a.btn{color:var(--ink)}
 .zoomg span{min-width:58px;text-align:center;font-family:var(--f-mono);font-size:13px}
 #qcv{touch-action:none;display:block;width:100%;height:100%}
 .qstage{padding:0;display:block}
+.pq-btn{display:inline-flex;align-items:center;gap:8px}.pq-btn svg{width:18px;height:18px}
+@media (max-width:820px){#edPq span{display:none}}
+#qLoupe{position:absolute;width:150px;height:150px;border-radius:50%;pointer-events:none;box-shadow:0 0 0 3px #fff,0 6px 22px rgba(0,0,0,.55);z-index:5;background:#fff}
 #qTitle{cursor:pointer}
 .qstep{font-family:var(--f-display);font-weight:600;font-size:15px;padding:0 6px;white-space:nowrap}
 .qtot{font-family:var(--f-mono);font-size:15px;font-weight:600;padding:0 8px;white-space:nowrap}
@@ -352,6 +355,7 @@ input[type=search]{width:100%;min-height:44px;border:1px solid var(--line);borde
     <div class="panel">
       <div class="fields">
         <label class="f"><span>N° de bâtiment</span><input type="text" id="m_bat" placeholder="ex. 6419"></label>
+        <label class="f"><span>Étage</span><input type="text" id="m_etage" placeholder="ex. R ou R, 1"></label>
         <label class="f"><span>Nom</span><input type="text" id="m_nom" placeholder="Nom Prénom"></label>
         <label class="f"><span>Date</span><input type="date" id="m_date"></label>
         <label class="f"><span>Version</span><input type="text" id="m_ver" placeholder="1.0"></label>
@@ -366,7 +370,7 @@ input[type=search]{width:100%;min-height:44px;border:1px solid var(--line);borde
   </section>
 
   <section>
-    <div class="sec-h"><h2>Bâtiments et plans</h2></div>
+    <div class="sec-h"><h2>Bâtiments et plans</h2><button class="btn pq-btn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM4 9.3h16M4 14.6h16M9.3 4v16M14.6 4v16"/></svg>Plan quadrillé</button></div>
     <div class="grid" id="covers"></div>
     <div class="add-row"><button class="btn" id="addBat" type="button">+ Bâtiment</button><button class="btn" id="addPlan" type="button">+ Plan</button></div>
   </section>
@@ -374,6 +378,7 @@ input[type=search]{width:100%;min-height:44px;border:1px solid var(--line);borde
   <section>
     <div class="sec-h">
       <h2>Photos</h2>
+      <button class="btn pq-btn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM4 9.3h16M4 14.6h16M9.3 4v16M14.6 4v16"/></svg>Plan quadrillé</button>
     </div>
     <div class="add">
       <label for="camIn">
@@ -408,6 +413,7 @@ input[type=search]{width:100%;min-height:44px;border:1px solid var(--line);borde
 <div class="ed" id="ed" hidden>
   <div class="ed-top">
     <button class="btn" id="edCancel" type="button">Annuler</button>
+    <button class="btn pq-btn" id="edPq" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM4 9.3h16M4 14.6h16M9.3 4v16M14.6 4v16"/></svg><span>Plan quadrillé</span></button>
     <b id="edTitle">Photo</b>
     <button class="btn primary" id="edOk" type="button">Valider</button>
   </div>
@@ -442,6 +448,7 @@ input[type=search]{width:100%;min-height:44px;border:1px solid var(--line);borde
   <div class="dd-pop" id="qPop" hidden></div>
   <div class="stage qstage">
     <canvas id="qcv"></canvas>
+    <canvas id="qLoupe" hidden></canvas>
     <div class="zoomg" aria-label="Zoom"><button type="button" id="qzOut" aria-label="Dézoomer">−</button><span id="qzLbl">100 %</span><button type="button" id="qzIn" aria-label="Zoomer">+</button><button type="button" id="qzFit" class="txt">Ajuster</button></div>
   </div>
 </div>
@@ -683,7 +690,7 @@ function buildLegendForm(){
   updateLegendPlaceholders();
 }
 function updateLegendPlaceholders(){const a=autoCounts();SYMS.forEach(s=>{const i=$('lg_'+s.k);if(i)i.placeholder=a[s.k]})}
-const metaKeys=['titre','bat','nom','date','ver'];
+const metaKeys=['titre','bat','etage','nom','date','ver'];
 function bindForm(){
   metaKeys.forEach(k=>{const el=$('m_'+k);el.value=S.meta[k]||'';el.oninput=()=>{S.meta[k]=el.value;save()}});
   $('concl').innerHTML=S.conclusion||'';
@@ -1458,7 +1465,7 @@ function qDraw(x,k,final){
     if(!final&&Q.mcur)qDrawMeas(x,Q.mcur,k,L,Q.hov?qSnapA(Q.mcur.pts[Q.mcur.pts.length-1],Q.hov):null,false)}
   if(final)return;
   const dot=(p,col,r)=>{x.fillStyle=col;x.beginPath();x.arc(p.x,p.y,px(r||5),0,Math.PI*2);x.fill();x.strokeStyle='#fff';x.lineWidth=px(1.5);x.stroke()};
-  if(Q.step==='unit'&&Q.ua){const b=Q.hov||Q.ua;x.strokeStyle='#ff2d55';x.lineWidth=px(2.5);x.beginPath();x.moveTo(Q.ua.x,Q.ua.y);x.lineTo(b.x,b.y);x.stroke();dot(Q.ua,'#ff2d55');dot(b,'#ff2d55')}
+  if(Q.step==='unit'&&Q.ua){const b=Q.hov||Q.ua;x.strokeStyle='#ff2d55';x.lineWidth=px(2.5);x.beginPath();x.moveTo(Q.ua.x,Q.ua.y);x.lineTo(b.x,b.y);x.stroke();dot(Q.ua,'#ff2d55',3);if(!qLp)dot(b,'#ff2d55',3)}
   if(Q.o&&Q.step!=='unit'&&Q.step!=='origin'&&!qReady()){const e=qP(0,Q.ny||0);x.strokeStyle=qrgb(QC.heavy);x.lineWidth=px(2.5);x.beginPath();x.moveTo(Q.o.x,Q.o.y);x.lineTo(e.x,e.y);x.stroke();
     for(let j=0;j<=Q.ny;j++){const a=qP(-0.25,j),b=qP(0.25,j);x.lineWidth=px(1.5);x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke()}}
   if(Q.o&&Q.step!=='unit')dot(Q.o,'#ff2d55',6);
@@ -1472,7 +1479,16 @@ function qHandles(){return [{id:'o',...qP(0,0)},{id:'y',...qP(0,Q.ny)},{id:'x',.
 function qRedraw(){if(qRaf||!Q)return;qRaf=requestAnimationFrame(()=>{qRaf=0;if(!Q||!qImg)return;const d=Math.min(devicePixelRatio||1,2),W=qcv.clientWidth,H=qcv.clientHeight;
   if(qcv.width!==Math.round(W*d)||qcv.height!==Math.round(H*d)){qcv.width=Math.round(W*d);qcv.height=Math.round(H*d)}
   const x=qcv.getContext('2d');x.setTransform(1,0,0,1,0,0);x.fillStyle='#0d1117';x.fillRect(0,0,qcv.width,qcv.height);
-  x.setTransform(d*qv.s,0,0,d*qv.s,d*qv.x,d*qv.y);qDraw(x,qv.s,false);$('qzLbl').textContent=Math.round(qv.s/qv.fit*100)+' %'})}
+  x.setTransform(d*qv.s,0,0,d*qv.s,d*qv.x,d*qv.y);qDraw(x,qv.s,false);$('qzLbl').textContent=Math.round(qv.s/qv.fit*100)+' %';qLoupeDraw(d)})}
+/* loupe au-dessus du doigt (écran tactile) */
+let qLp=null;const QLZ=150,QLM=3;
+function qLoupeDraw(d){const lc=$('qLoupe');if(!qLp){lc.hidden=true;return}const W=qcv.clientWidth;
+  if(lc.width!==QLZ*d){lc.width=lc.height=QLZ*d}let l=qLp.x-QLZ/2,t=qLp.y-QLZ-60;if(t<4){t=qLp.y+60}l=Math.max(4,Math.min(W-QLZ-4,l));lc.style.left=l+'px';lc.style.top=t+'px';lc.hidden=false;
+  const x=lc.getContext('2d'),src=QLZ/QLM*d;x.fillStyle='#fff';x.fillRect(0,0,lc.width,lc.height);x.imageSmoothingEnabled=true;
+  x.drawImage(qcv,qLp.x*d-src/2,qLp.y*d-src/2,src,src,0,0,lc.width,lc.height);
+  const c=lc.width/2;x.strokeStyle='#ff2d55';x.lineWidth=1.5*d;x.beginPath();x.moveTo(c-18*d,c);x.lineTo(c-5*d,c);x.moveTo(c+5*d,c);x.lineTo(c+18*d,c);x.moveTo(c,c-18*d);x.lineTo(c,c-5*d);x.moveTo(c,c+5*d);x.lineTo(c,c+18*d);x.stroke();
+  x.beginPath();x.arc(c,c,1.6*d,0,Math.PI*2);x.fillStyle='#ff2d55';x.fill()}
+function qLoupeAt(e){const r=qcv.getBoundingClientRect();qLp={x:e.clientX-r.left,y:e.clientY-r.top}}
 function qFit(){const W=qcv.clientWidth,H=qcv.clientHeight;qv.fit=Math.min(W/Q.w,H/Q.h)*0.96;qv.s=qv.fit;qv.x=(W-Q.w*qv.s)/2;qv.y=(H-Q.h*qv.s)/2;qRedraw()}
 function qZoom(f,cx,cy){const W=qcv.clientWidth,H=qcv.clientHeight;if(cx==null){cx=W/2;cy=H/2}const ns=Math.max(qv.fit*0.5,Math.min(qv.fit*40,qv.s*f));
   qv.x=cx-(cx-qv.x)*ns/qv.s;qv.y=cy-(cy-qv.y)*ns/qv.s;qv.s=ns;qRedraw()}
@@ -1495,13 +1511,16 @@ async function qTap(p){
 function qCommit(p){qTrack(p);if(Q.step==='y'){Q.step='x';Q.nx=1}else if(Q.step==='x'){Q.step='done';qMode='grid'}qOpts();qRedraw();qSaveSoon()}
 const qptr=new Map();let qpin=null,qact=null;
 qcv.addEventListener('pointerdown',e=>{e.preventDefault();qptr.set(e.pointerId,{x:e.clientX,y:e.clientY});
-  if(qptr.size===2){qact=null;const [a,b]=[...qptr.values()],r=qcv.getBoundingClientRect();qpin={d0:Math.hypot(a.x-b.x,a.y-b.y)||1,s0:qv.s,ix:((a.x+b.x)/2-r.left-qv.x)/qv.s,iy:((a.y+b.y)/2-r.top-qv.y)/qv.s};return}
+  if(qptr.size===2){qact=null;qLp=null;const [a,b]=[...qptr.values()],r=qcv.getBoundingClientRect();qpin={d0:Math.hypot(a.x-b.x,a.y-b.y)||1,s0:qv.s,ix:((a.x+b.x)/2-r.left-qv.x)/qv.s,iy:((a.y+b.y)/2-r.top-qv.y)/qv.s};return}
   if(qptr.size>2||!Q)return;try{qcv.setPointerCapture(e.pointerId)}catch(_){}
   const p=qToImg(e);qact={id:e.pointerId,sx:e.clientX,sy:e.clientY,moved:false,p0:p,vx:qv.x,vy:qv.y,kind:'pan'};
+  const touch=e.pointerType!=='mouse';qact.touch=touch;
+  if(touch&&(Q.step==='unit'||Q.step==='origin'||(Q.step==='done'&&qMode==='measure'))){qact.kind='aim';qAim(p,e);return}
   if(Q.step==='done'){
     if(qMode==='grid'){const h=qHandles().find(h=>Math.hypot(h.x-p.x,h.y-p.y)*qv.s<=22);if(h){Object.assign(qact,{kind:'h',h:h.id,o0:{...Q.o}});return}}
     else{const i=qTextAt(p);if(i>=0){if(qSel!==i){qSel=i;qOpts()}Object.assign(qact,{kind:'t',t0:{...Q.texts[i].p}});qRedraw();return}if(qSel>=0){qSel=-1;qOpts();qRedraw();qact.desel=true}}}
-  if(Q.step==='y'||Q.step==='x'){qact.kind='track';qTrack(p)}});
+  if(Q.step==='y'||Q.step==='x'){qact.kind='track';if(touch)qLoupeAt(e);qTrack(p)}});
+function qAim(p,e){qLoupeAt(e);if((Q.step==='unit'&&Q.ua&&!Q.ub)||(qMode==='measure'&&Q.mcur))Q.hov=p;qRedraw()}
 qcv.addEventListener('pointermove',e=>{if(qptr.has(e.pointerId))qptr.set(e.pointerId,{x:e.clientX,y:e.clientY});if(!Q)return;
   if(qpin&&qptr.size>=2){const [a,b]=[...qptr.values()],r=qcv.getBoundingClientRect(),d=Math.hypot(a.x-b.x,a.y-b.y)||1;
     qv.s=Math.max(qv.fit*0.5,Math.min(qv.fit*40,qpin.s0*d/qpin.d0));qv.x=(a.x+b.x)/2-r.left-qpin.ix*qv.s;qv.y=(a.y+b.y)/2-r.top-qpin.iy*qv.s;qRedraw();return}
@@ -1509,11 +1528,13 @@ qcv.addEventListener('pointermove',e=>{if(qptr.has(e.pointerId))qptr.set(e.point
   if(!qact||qact.id!==e.pointerId){if(!qptr.size&&qMode==='measure'&&Q.mcur&&Q.step==='done'){Q.hov=p;qRedraw();return}if(!qptr.size&&(Q.step==='y'||Q.step==='x'||(Q.step==='unit'&&Q.ua&&!Q.ub)))qTrack(p);return}
   if(Math.hypot(e.clientX-qact.sx,e.clientY-qact.sy)>6)qact.moved=true;
   if(qact.kind==='pan'){if(qact.moved){qv.x=qact.vx+e.clientX-qact.sx;qv.y=qact.vy+e.clientY-qact.sy;qRedraw()}return}
-  if(qact.kind==='track'){qTrack(p);return}
+  if(qact.kind==='aim'){qAim(p,e);return}
+  if(qact.kind==='track'){if(qact.touch)qLoupeAt(e);qTrack(p);return}
   if(!qact.moved)return;
-  if(qact.kind==='h'){if(qact.h==='o')Q.o={x:qact.o0.x+p.x-qact.p0.x,y:qact.o0.y+p.y-qact.p0.y};else if(qact.h==='y')qTrackY(p);else qTrackX(p);qOpts();qRedraw();return}
+  if(qact.kind==='h'){if(qact.touch)qLoupeAt(e);if(qact.h==='o')Q.o={x:qact.o0.x+p.x-qact.p0.x,y:qact.o0.y+p.y-qact.p0.y};else if(qact.h==='y')qTrackY(p);else qTrackX(p);qOpts();qRedraw();return}
   if(qact.kind==='t'){Q.texts[qSel].p={x:qact.t0.x+p.x-qact.p0.x,y:qact.t0.y+p.y-qact.p0.y};qRedraw()}});
-function qUp(e){qptr.delete(e.pointerId);if(qpin&&qptr.size<2)qpin=null;if(!qact||qact.id!==e.pointerId)return;const a=qact;qact=null;if(!Q)return;const p=qToImg(e);
+function qUp(e){qptr.delete(e.pointerId);if(qpin&&qptr.size<2)qpin=null;if(!qact||qact.id!==e.pointerId)return;const a=qact;qact=null;if(qLp){qLp=null;qRedraw()}if(!Q)return;const p=qToImg(e);
+  if(a.kind==='aim'){if(e.type==='pointerup'){qTap.ev=e;qTap(p)}return}
   if(a.kind==='track'){qCommit(p);return}
   if(a.kind==='pan'){if(!a.moved&&!a.desel&&e.type==='pointerup'){qTap.ev=e;qTap(p)}return}
   if(a.moved)qSaveSoon()}
@@ -1653,6 +1674,26 @@ $('qq').oninput=renderQList;
 function setTab(t){document.querySelectorAll('.tabs [data-tab]').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t));$('tabRep').hidden=t!=='rep';$('tabPlan').hidden=t!=='plan';try{localStorage.setItem('rp-tab',t)}catch(e){}}
 document.querySelectorAll('.tabs [data-tab]').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
 setTab((()=>{try{return localStorage.getItem('rp-tab')}catch(e){return null}})()==='plan'?'plan':'rep');
+/* ================= Plan quadrillé SharePoint (Building maps) ================= */
+const SP_BASE='/sites/cs-support/firstline/Building maps/Building maps';
+const spEnc=v=>encodeURIComponent(v).replace(/-/g,'%2D').replace(/\./g,'%2E');
+const spLink=id=>'https://cern.sharepoint.com/sites/cs-support/firstline/Building%20maps/Forms/AllItems.aspx?viewid=baca5e03%2D1711%2D49cc%2Db347%2D7d6d011c0f94&FolderCTID=0x01200088BE94556DCF934AA4CF02AEC50ACE13'+(id?'&id='+spEnc(id)+'&parent='+spEnc(SP_BASE):'');
+function spBat(){const b=String((S&&S.meta.bat)||'').trim().replace(/^B\.?\s*/i,'');return /^\d+$/.test(b)?b.padStart(4,'0'):b}
+const spFloors=()=>String((S&&S.meta.etage)||'').split(/[,;\/]+/).map(x=>x.trim()).filter(Boolean);
+const spFile=(b,e)=>b+'-'+e+' Plan quadrille.pdf';
+/* ouverture par un vrai lien (fiable sur iPad, sans blocage de fenêtre) */
+function spGo(url){const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove()}
+function openPlanQ(){if(!S)return;const b=spBat(),fl=spFloors();
+  if(!b||!fl.length){const miss=!b&&!fl.length?'le n° de bâtiment et l\'étage':!b?'le n° de bâtiment':'l\'étage';
+    ask('Information manquante','Renseigne '+miss+' dans « Informations » pour ouvrir le plan quadrillé.',[['ok','OK','primary']]).then(()=>{
+      if($('ed').hidden){const el=$(!b?'m_bat':'m_etage');el.scrollIntoView({block:'center'});setTimeout(()=>el.focus(),300)}});return}
+  try{flush()}catch(_){}
+  if(fl.length===1){spGo(spLink(SP_BASE+'/'+spFile(b,fl[0])));return}
+  $('dlgT').textContent='Plan quadrillé';$('dlgP').textContent='Bâtiment '+b+' · choisis l\'étage.';const A=$('dlgA');A.innerHTML='';const close=()=>{$('dlgBg').hidden=true};
+  const lk=(l,u)=>{const x=document.createElement('a');x.className='btn';x.href=u;x.target='_blank';x.rel='noopener';x.textContent=l;x.onclick=close;A.appendChild(x)};
+  fl.forEach(e=>lk(e,spLink(SP_BASE+'/'+spFile(b,e))));lk('Dossier Building maps',spLink(''));
+  const c=document.createElement('button');c.type='button';c.className='btn';c.textContent='Annuler';c.onclick=close;A.appendChild(c);$('dlgBg').hidden=false}
+document.querySelectorAll('.pq-btn').forEach(x=>x.addEventListener('click',openPlanQ));
 /* ================= Hors ligne (service worker) ================= */
 if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
   navigator.serviceWorker.register('sw.js').then(reg=>{
