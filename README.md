@@ -13,7 +13,8 @@ L'accueil est organisé en onglets : « Rapports » et « Plans quadrillés ».
 ## Fonctionnalités
 
 **Rapports**
-- Plusieurs rapports dans « Mes rapports », avec nouvelle version (incrément du numéro), export et import en fichier `.rapport`.
+- Plusieurs rapports dans « Mes rapports », avec nouvelle version (incrément du numéro).
+- Bouton **Importer** (plusieurs fichiers `.rapport`, `.plan` ou `.utp` à la fois) et mode **Sélectionner** (Tout sélectionner, Exporter la sélection) dans chaque onglet.
 - Informations du cartouche : titre, n° de bâtiment, nom, date, version.
 - Légende avec comptage automatique des symboles placés, et quantités modifiables à la main.
 - Section « Commentaires » en texte enrichi : gras, italique, barré, couleurs.
@@ -31,6 +32,7 @@ L'accueil est organisé en onglets : « Rapports » et « Plans quadrillés ».
 - Menu « Angle » (5° à 90°) et touche Maj (30°) pour tracer des traits droits.
 - Aperçu transparent du trait en cours.
 - Zoom (pincement à deux doigts), sélection et modification des formes déjà placées, retour arrière.
+- Recadrer et pivoter une photo (outil « Recadrer »), les annotations suivent.
 
 **PDF**
 - Aperçu avant génération.
@@ -43,6 +45,7 @@ L'accueil est organisé en onglets : « Rapports » et « Plans quadrillés ».
 - Origine, fin de l'axe Y (vertical, ou « Axe libre » pour un plan penché), puis extension en X en direct.
 - Réglages : colonnes, lignes, ajustement fin de la case, dépassement des lignes (aucun, ½ ou 1 case).
 - Texte ISOCPEUR (couleur, taille en pt) pour un titre ou des repères.
+- Retour (annuler) et loupe au doigt pour viser précisément.
 - Mesure en polyligne avec le total en m ou cm, affichable ou non dans le PDF.
 - PDF A4 (orientation automatique) : grille vectorielle bleue, numérotation, débord d'une case, plan penché remis droit.
 
@@ -62,8 +65,8 @@ L'accueil est organisé en onglets : « Rapports » et « Plans quadrillés ».
 
 - Les rapports restent **uniquement sur l'appareil** : stockage local du navigateur, rien n'est envoyé sur un serveur.
 - L'app installée et Safari ont chacun leur propre mémoire.
-- **Le fichier `.rapport` est la sauvegarde.** Il faut l'exporter régulièrement, et toujours avant de supprimer ou réinstaller l'app.
-- Pour passer d'un appareil à un autre : exporter le `.rapport`, puis l'importer sur l'autre appareil.
+- **Les fichiers exportés sont la sauvegarde** : `.rapport` (un rapport), `.plan` (un plan quadrillé), `.utp` (plusieurs éléments). Exporter régulièrement, et toujours avant de supprimer ou réinstaller l'app (« Sélectionner » → « Tout sélectionner » → « Exporter »).
+- Pour passer d'un appareil à un autre : exporter, puis « Importer » sur l'autre appareil. Un élément déjà présent n'est remplacé que si le fichier est plus récent.
 
 ---
 
