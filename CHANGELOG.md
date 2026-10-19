@@ -11,6 +11,7 @@ La version installée s'affiche dans l'en-tête de l'app (ex. « v1.0.0 »).
 
 ## En développement (prochaine version)
 
+- Barre CERN officielle (Signed in as / Sign out via le SSO) et en-tête UTP sur bandeau bleu avec badge TEST / PROD.
 - Plans quadrillés : supprimer / restaurer des cases (menu « Cases ») pour des grilles en L ou découpées ; lignes et plan suivent le contour.
 
 ---
