@@ -9,6 +9,12 @@ La version installée s'affiche dans l'en-tête de l'app (ex. « v1.0.0 »).
 
 ---
 
+## En développement (prochaine version)
+
+- Plans quadrillés : supprimer / restaurer des cases (menu « Cases ») pour des grilles en L ou découpées ; lignes et plan suivent le contour.
+
+---
+
 ## 1.0.0 – 18 octobre 2026
 
 Première version officielle sous le nom **UTP – Useful Tools Pack**.
