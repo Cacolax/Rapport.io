@@ -46,7 +46,25 @@ button,input,textarea,select{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 
-.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar{position:sticky;top:0;z-index:5;background:#2350c8;color:#fff;border-bottom:1px solid #1b3fa0;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.bar .brand span{color:rgba(255,255,255,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .logo{border-radius:9px;box-shadow:0 0 0 2px rgba(255,255,255,.55)}
+.bar .btn{background:transparent;border-color:rgba(255,255,255,.55);color:#fff}
+.bar .btn:hover{background:rgba(255,255,255,.12)}
+.bar .btn.primary{background:#fff;border-color:#fff;color:#1b3fa0}
+.bar .btn:disabled{opacity:.6}
+.bar .env,.bar .ver{font-style:normal;font-family:var(--f-mono);font-size:12px;font-weight:600;letter-spacing:.06em;padding:3px 8px;border-radius:6px;flex:none}
+.bar .env{background:#ffd400;color:#1b2430}.bar .env.prod{background:#e5322d;color:#fff}
+.bar .ver{border:1px solid rgba(255,255,255,.5);color:#fff}
+/* Barre CERN (modèle CERN Framework 2.0) */
+#cern-toolbar{background:#222;color:#999;font:14px/40px "PT Sans",Arial,"Helvetica Neue",sans-serif;padding:env(safe-area-inset-top,0px) max(5%,env(safe-area-inset-right,0px)) 0 max(5%,env(safe-area-inset-left,0px));display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:40px}
+#cern-toolbar h1{margin:0;font:inherit;letter-spacing:.07em;white-space:nowrap}
+#cern-toolbar a{color:#999;text-decoration:none;border-radius:3px;padding:4px 6px;transition:background-color .1s}
+#cern-toolbar a:hover{background:#000;color:#fff}
+#cern-toolbar h1 a{color:#ddd;font-weight:700}#cern-toolbar h1 a span{color:#999;font-weight:400}
+#cern-toolbar ul{list-style:none;margin:0;padding:0;display:flex;gap:1em;white-space:nowrap}
+#cern-toolbar .account{color:#eee}
+@media (max-width:750px){#cern-toolbar h1 a span,#cern-toolbar .cern-accountlinks>span>:not(.account),#cern-toolbar .cern-directory{display:none}#cern-toolbar .cern-accountlinks>span{font-size:0}#cern-toolbar .account{font-size:14px}}
 .bar-in,.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .bar-in{display:flex;align-items:center;gap:10px;padding-block:10px;max-width:1180px;margin:0 auto;flex-wrap:wrap}
 .brand-w{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
@@ -54,7 +72,7 @@ button{cursor:pointer}
 .brand{display:flex;flex-direction:column;min-width:0;flex:1}
 .brand b{font-family:var(--f-display);font-weight:700;font-size:23px;line-height:1.05;letter-spacing:-.015em}
 .brand span{font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-top:3px}
-.brand #appVer{margin:0;text-transform:none}
+
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);font-weight:600;white-space:nowrap}
 .btn:hover{border-color:var(--muted)}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
@@ -294,9 +312,22 @@ input[type=search]{width:100%;min-height:44px;border:1px solid var(--line);borde
 .upd{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:70;display:flex;align-items:center;gap:14px;background:var(--ink);color:var(--bg);padding:10px 12px 10px 18px;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.3);max-width:calc(100% - 32px)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+<!-- Barre CERN officielle (CERN Framework 2.0) ; le style intégré ci-dessus sert de secours hors ligne -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400&display=swap">
+<link rel="stylesheet" href="https://framework.web.cern.ch/framework/2.0/cern_toolbar/css/toolbar.css">
+<style>/* ajustements après le style officiel : zone de l'encoche iPad, hauteur */
+body #cern-toolbar{padding-top:env(safe-area-inset-top,0px);height:auto;min-height:40px;box-sizing:content-box}</style>
 
+<div id="cern-toolbar">
+  <h1><a href="https://home.cern" title="CERN" target="_blank" rel="noopener">CERN <span>Accelerating science</span></a></h1>
+  <ul class="cern-signedin">
+    <li class="cern-accountlinks" id="tbUser" hidden><span>Signed in as: <a class="account" id="tbAcc" href="https://cern.ch/account" target="_blank" rel="noopener" title="Votre compte CERN"></a> </span><a class="cern-signout" id="tbOut" href="/oauth2/sign_out" title="Se déconnecter">Sign out</a></li>
+    <li id="tbIn" hidden><a class="cern-signin" href="/oauth2/start?rd=%2F" title="Se connecter avec le compte CERN">Sign in</a></li>
+    <li><a class="cern-directory" href="https://cern.ch/directory" target="_blank" rel="noopener" title="Annuaire CERN">Directory</a></li>
+  </ul>
+</div>
 <header class="bar"><div class="bar-in">
-  <div class="brand-w"><svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="9" fill="#2350c8"/><path d="M0 10h40M0 20h40M0 30h40M10 0v40M20 0v40M30 0v40" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M6.0 20.0 L6.5 21.1 L7.0 22.2 L7.5 23.1 L8.0 23.9 L8.5 24.5 L9.0 24.9 L9.5 25.0 L10.0 24.9 L10.5 24.5 L11.0 23.9 L11.5 23.1 L12.0 22.2 L12.5 21.1 L13.0 20.0 L13.5 18.9 L14.0 17.8 L14.5 16.9 L15.0 16.1 L15.5 15.5 L16.0 15.1 L16.5 15.0 L17.0 15.1 L17.5 15.5 L18.0 16.1 L18.5 16.9 L19.0 17.8 L19.5 18.9 L20.0 20.0 L20.5 21.1 L21.0 22.2 L21.5 23.1 L22.0 23.9 L22.5 24.5 L23.0 24.9 L23.5 25.0 L24.0 24.9 L24.5 24.5 L25.0 23.9 L25.5 23.1 L26.0 22.2 L26.5 21.1 L27.0 20.0 L27.5 18.9 L28.0 17.8 L28.5 16.9 L29.0 16.1 L29.5 15.5 L30.0 15.1 L30.5 15.0 L31.0 15.1 L31.5 15.5 L32.0 16.1 L32.5 16.9 L33.0 17.8 L33.5 18.9 L34.0 20.0" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.0 20.0 L6.5 18.9 L7.0 17.8 L7.5 16.9 L8.0 16.1 L8.5 15.5 L9.0 15.1 L9.5 15.0 L10.0 15.1 L10.5 15.5 L11.0 16.1 L11.5 16.9 L12.0 17.8 L12.5 18.9 L13.0 20.0 L13.5 21.1 L14.0 22.2 L14.5 23.1 L15.0 23.9 L15.5 24.5 L16.0 24.9 L16.5 25.0 L17.0 24.9 L17.5 24.5 L18.0 23.9 L18.5 23.1 L19.0 22.2 L19.5 21.1 L20.0 20.0 L20.5 18.9 L21.0 17.8 L21.5 16.9 L22.0 16.1 L22.5 15.5 L23.0 15.1 L23.5 15.0 L24.0 15.1 L24.5 15.5 L25.0 16.1 L25.5 16.9 L26.0 17.8 L26.5 18.9 L27.0 20.0 L27.5 21.1 L28.0 22.2 L28.5 23.1 L29.0 23.9 L29.5 24.5 L30.0 24.9 L30.5 25.0 L31.0 24.9 L31.5 24.5 L32.0 23.9 L32.5 23.1 L33.0 22.2 L33.5 21.1 L34.0 20.0" fill="none" stroke="#ffd400" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="brand"><b>UTP</b><span>Useful Tools Pack · IT-FCS-DO · <span id="appVer">v1.0.0</span></span></div></div>
+  <div class="brand-w"><svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="9" fill="#2350c8"/><path d="M0 10h40M0 20h40M0 30h40M10 0v40M20 0v40M30 0v40" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M6.0 20.0 L6.5 21.1 L7.0 22.2 L7.5 23.1 L8.0 23.9 L8.5 24.5 L9.0 24.9 L9.5 25.0 L10.0 24.9 L10.5 24.5 L11.0 23.9 L11.5 23.1 L12.0 22.2 L12.5 21.1 L13.0 20.0 L13.5 18.9 L14.0 17.8 L14.5 16.9 L15.0 16.1 L15.5 15.5 L16.0 15.1 L16.5 15.0 L17.0 15.1 L17.5 15.5 L18.0 16.1 L18.5 16.9 L19.0 17.8 L19.5 18.9 L20.0 20.0 L20.5 21.1 L21.0 22.2 L21.5 23.1 L22.0 23.9 L22.5 24.5 L23.0 24.9 L23.5 25.0 L24.0 24.9 L24.5 24.5 L25.0 23.9 L25.5 23.1 L26.0 22.2 L26.5 21.1 L27.0 20.0 L27.5 18.9 L28.0 17.8 L28.5 16.9 L29.0 16.1 L29.5 15.5 L30.0 15.1 L30.5 15.0 L31.0 15.1 L31.5 15.5 L32.0 16.1 L32.5 16.9 L33.0 17.8 L33.5 18.9 L34.0 20.0" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.0 20.0 L6.5 18.9 L7.0 17.8 L7.5 16.9 L8.0 16.1 L8.5 15.5 L9.0 15.1 L9.5 15.0 L10.0 15.1 L10.5 15.5 L11.0 16.1 L11.5 16.9 L12.0 17.8 L12.5 18.9 L13.0 20.0 L13.5 21.1 L14.0 22.2 L14.5 23.1 L15.0 23.9 L15.5 24.5 L16.0 24.9 L16.5 25.0 L17.0 24.9 L17.5 24.5 L18.0 23.9 L18.5 23.1 L19.0 22.2 L19.5 21.1 L20.0 20.0 L20.5 18.9 L21.0 17.8 L21.5 16.9 L22.0 16.1 L22.5 15.5 L23.0 15.1 L23.5 15.0 L24.0 15.1 L24.5 15.5 L25.0 16.1 L25.5 16.9 L26.0 17.8 L26.5 18.9 L27.0 20.0 L27.5 21.1 L28.0 22.2 L28.5 23.1 L29.0 23.9 L29.5 24.5 L30.0 24.9 L30.5 25.0 L31.0 24.9 L31.5 24.5 L32.0 23.9 L32.5 23.1 L33.0 22.2 L33.5 21.1 L34.0 20.0" fill="none" stroke="#ffd400" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="brand"><b>UTP</b><span>Useful Tools Pack · IT-FCS-DO</span></div><i class="env" id="appEnv" hidden></i><i class="ver" id="appVer">v1.0.0</i></div>
   <button class="btn rep-only" id="backBtn" type="button" hidden>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
     <span>Mes rapports</span>
@@ -1831,6 +1862,15 @@ function openPlanQ(){if(!S)return;const b=spBat(),fl=spFloors();
   const c=document.createElement('button');c.type='button';c.className='btn';c.textContent='Annuler';c.onclick=close;A.appendChild(c);$('dlgBg').hidden=false}
 document.querySelectorAll('.pq-btn').forEach(x=>x.addEventListener('click',openPlanQ));
 try{$('appVer').textContent='v'+APP_VERSION}catch(e){}
+/* Barre CERN : utilisateur fourni par le proxy SSO (oauth2-proxy) ; environnement d'après l'adresse */
+(()=>{const h=location.hostname,cern=/\.cern\.ch$/.test(h)||/\.cern$/.test(h);const env=$('appEnv');
+  if(cern){const test=/test|apptest|webtest/.test(h);env.textContent=test?'TEST':'PROD';env.classList.toggle('prod',!test);env.hidden=false}
+  $('tbOut').href='/oauth2/sign_out?rd='+encodeURIComponent('https://auth.cern.ch/auth/realms/cern/protocol/openid-connect/logout');
+  if(!cern)return;
+  fetch('/oauth2/userinfo',{credentials:'same-origin',cache:'no-store'}).then(r=>r.ok?r.json():null).then(u=>{
+    const name=u&&(u.preferredUsername||u.user||(u.email||'').split('@')[0]);
+    if(name){$('tbAcc').textContent=name+' (CERN)';$('tbAcc').title='Connecté en tant que '+name;$('tbUser').hidden=false}else $('tbIn').hidden=false})
+    .catch(()=>{$('tbIn').hidden=!navigator.onLine})})();
 /* ================= Hors ligne (service worker) ================= */
 if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
   navigator.serviceWorker.register('sw.js').then(reg=>{
